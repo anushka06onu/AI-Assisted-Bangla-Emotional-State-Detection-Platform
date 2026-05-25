@@ -150,3 +150,8 @@ streamlit run app/app.py
 ## ⚠️ Ethical & Mental Wellness Disclaimer
 **This AI is a Mood-Mirror, Not a Doctor.**  
 This application was engineered purely for educational reflection, self-awareness, and supportive personal guidance. It does not provide medical diagnoses or psychological assessments. If you or someone you know is going through persistent distress or severe emotional difficulties, please speak to a close friend, trusted family member, or contact a certified medical practitioner or mental health professional. Your mental wellness is what matters most.
+
+---
+
+Developed by [Fateha Hossain Anushka](https://fatehahossainanushka.vercel.app/)
+

@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "models/ui_screenshot.png",
+      "use": "@vercel/static"
+    }
+  ]
+}

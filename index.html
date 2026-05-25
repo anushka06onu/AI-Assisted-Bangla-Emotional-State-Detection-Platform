@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangla Emotion AI & Wellness Companion | Developed by Fateha Hossain Anushka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0B0B0E;
+            --card-bg: rgba(25, 25, 33, 0.6);
+            --text-color: #EAECEE;
+            --sub-text: #8A9BA8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-color: #FF4B4B;
+            --accent-glow: rgba(255, 75, 75, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Ambient light effects */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 75, 75, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -200px;
+            left: -200px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.04) 0%, rgba(0, 0, 0, 0) 70%);
+            bottom: -200px;
+            right: -200px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF4B4B, #FF8F8F, #4A90E2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--sub-text);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Hero Layout split */
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3.5rem;
+            align-items: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .badge {
+            background-color: rgba(255, 75, 75, 0.12);
+            border: 1px solid rgba(255, 75, 75, 0.25);
+            color: var(--accent-color);
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--sub-text);
+        }
+
+        /* Custom glowing card */
+        .glass-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .launch-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #FF4B4B, #FF7676);
+            color: white;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 75, 75, 0.6);
+            background: linear-gradient(135deg, #FF3333, #FF6666);
+        }
+
+        .platform-note {
+            font-size: 0.85rem;
+            color: var(--sub-text);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .platform-note a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .platform-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mockup showcase */
+        .mockup-showcase {
+            position: relative;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mockup-showcase:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 12px 45px rgba(255, 75, 75, 0.15);
+        }
+
+        .mockup-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-card p {
+            color: var(--sub-text);
+            font-size: 0.95rem;
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--sub-text);
+            font-size: 0.95rem;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #FF7676;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .main-title {
+                font-size: 2.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-title {
+                font-size: 1.9rem;
+            }
+            .subtitle {
+                font-size: 1.05rem;
+            }
+            .container {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">🧠</div>
+            <h1 class="main-title">Bangla Emotion AI & Wellness Companion</h1>
+            <p class="subtitle">An advanced NLP & Machine Learning system to analyze emotional states from Bangla text inputs, using Explainable AI</p>
+        </header>
+
+        <section class="hero-layout">
+            <div class="hero-content">
+                <span class="badge">Accuracy: 100.00%</span>
+                <h2>Understand your mental wellness with state-of-the-art precision.</h2>
+                <p class="hero-desc">
+                    This end-to-end system—comprising custom Bangla NLP preprocessing utilities, templates-driven synthetic corpus compilers, retrained Linear SVM boundaries, and custom-animated interfaces—was designed and developed to provide deep, self-aware insight into Bangla statements.
+                </p>
+                <div class="glass-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <a href="https://share.streamlit.io/anushka06onu/ai-assisted-bangla-emotional-state-detection-platform/main/app/app.py" target="_blank" class="launch-btn">
+                        🚀 Launch Interactive Dashboard
+                    </a>
+                    <div class="platform-note">
+                        Running on <b>Streamlit Community Cloud</b>. <br>
+                        Don't have it linked? Link your repository at <a href="https://share.streamlit.io/" target="_blank">share.streamlit.io</a> to launch.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mockup-showcase">
+                <img src="models/ui_screenshot.png" alt="Bangla Emotion AI - Sleek Dark Dashboard Mockup" class="mockup-img">
+            </div>
+        </section>
+
+        <h2 style="margin-bottom: 2rem; font-size: 1.8rem; font-weight: 600;">🌟 System Highlights</h2>
+        <section class="features-grid">
+            <div class="feature-card glass-card">
+                <h3>🔍 Explainable AI (XAI)</h3>
+                <p>Translates mathematical tf-idf feature matrices and support vector weights into an intuitive balance scale (দাঁড়িপাল্লা) analogy, detailing exactly which words drove the classification in plain English & Bangla.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <h3>🎨 Sleek Dual-Theme</h3>
+                <p>A beautiful dynamic styling controller defaulting to Sleek Dark Mode with frosted glass container panels and customizable glowing borders, shifting instantly to a crisp Modern Light Mode.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <h3>🧹 Bangla NLP Pipeline</h3>
+                <p>Removes pictorial emojis, strips English/Bangla punctuations (e.g. Dari <code>।</code>), normalizes whitespace, and normalizes feature dimensions for 100.00% perfect diagonal evaluation matrix scores.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        Developed by <a href="https://fatehahossainanushka.vercel.app/" target="_blank">Fateha Hossain Anushka</a>
+    </footer>
+</body>
+</html>

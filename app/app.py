@@ -63,6 +63,8 @@ if theme_choice == "Sleek Dark (Default)":
     textarea_border = "rgba(255, 255, 255, 0.12)"
     textarea_text = "#EAECEE"
     shadow = "box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);"
+    layman_bg = "rgba(255, 255, 255, 0.03)"
+    layman_border = "rgba(255, 255, 255, 0.08)"
 else:
     # Modern Light Mode Variables
     bg_color = "#F4F6F8"
@@ -74,6 +76,8 @@ else:
     textarea_border = "#BDC3C7"
     textarea_text = "#2C3E50"
     shadow = "box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.04);"
+    layman_bg = "rgba(0, 0, 0, 0.02)"
+    layman_border = "rgba(0, 0, 0, 0.08)"
 
 # Inject full CSS customization
 st.markdown(f"""
@@ -246,6 +250,65 @@ st.markdown(f"""
             opacity: 1;
             transform: translateY(0);
         }}
+    }}
+    
+    /* Premium Expander Customization */
+    div[data-testid="stExpander"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 14px !important;
+        margin-bottom: 1.25rem !important;
+        overflow: hidden !important;
+        transition: border 0.3s ease, box-shadow 0.3s ease !important;
+        {shadow}
+    }}
+    
+    div[data-testid="stExpander"]:hover {{
+        border-color: #FF4B4B !important;
+    }}
+    
+    div[data-testid="stExpander"] summary {{
+        color: {text_color} !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 1.05rem !important;
+        padding: 0.85rem 1.2rem !important;
+        background-color: {card_bg} !important;
+    }}
+    
+    div[data-testid="stExpander"] summary:hover {{
+        color: #FF4B4B !important;
+    }}
+    
+    div[data-testid="stExpander"] [data-testid="stExpanderDetails"] {{
+        background-color: {card_bg} !important;
+        color: {text_color} !important;
+        padding: 1.25rem 1.5rem 1.5rem 1.5rem !important;
+        border-top: 1px solid {border_color} !important;
+    }}
+    
+    /* Layman Explanation Card Customization */
+    .layman-explanation-card {{
+        background-color: {layman_bg} !important;
+        border: 1px solid {layman_border} !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin-top: 1.5rem !important;
+        line-height: 1.7 !important;
+        color: {text_color} !important;
+    }}
+    
+    .layman-explanation-card h4 {{
+        color: #FF4B4B !important;
+        margin-top: 0 !important;
+        margin-bottom: 0.75rem !important;
+        font-weight: 600 !important;
+    }}
+    
+    .layman-explanation-card hr {{
+        border: 0 !important;
+        border-top: 1px solid {border_color} !important;
+        margin: 1.25rem 0 !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -562,13 +625,13 @@ else:
                                 st.plotly_chart(xai_fig, use_container_width=True, config={'displayModeBar': False})
                                 
                                 # Sleek, customized box for layman explanation
-                                box_bg = "rgba(255, 255, 255, 0.03)" if theme_choice == "Sleek Dark (Default)" else "rgba(0, 0, 0, 0.02)"
-                                box_border = "#444444" if theme_choice == "Sleek Dark (Default)" else "#BDC3C7"
                                 st.markdown(f"""
-                                <div style='margin-top: 1.5rem; padding: 1.25rem; border-radius: 12px; border: 1px solid {box_border}; background-color: {box_bg};'>
+                                <div class='layman-explanation-card'>
+                                
+                                {generate_layman_explanation(influences, predicted_emotion)}
+                                
+                                </div>
                                 """, unsafe_allow_html=True)
-                                st.markdown(generate_layman_explanation(influences, predicted_emotion))
-                                st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.markdown(
                 f"<div style='border: 2px dashed {border_color}; border-radius: 16px; padding: 4.5rem; text-align: center; color: {sub_text};'>"

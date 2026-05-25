@@ -65,6 +65,7 @@ if theme_choice == "Sleek Dark (Default)":
     shadow = "box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);"
     layman_bg = "rgba(255, 255, 255, 0.03)"
     layman_border = "rgba(255, 255, 255, 0.08)"
+    sidebar_bg = "#0E0E12"
 else:
     # Modern Light Mode Variables
     bg_color = "#F4F6F8"
@@ -78,6 +79,7 @@ else:
     shadow = "box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.04);"
     layman_bg = "rgba(0, 0, 0, 0.02)"
     layman_border = "rgba(0, 0, 0, 0.08)"
+    sidebar_bg = "#FFFFFF"
 
 # Inject full CSS customization
 st.markdown(f"""
@@ -106,38 +108,55 @@ st.markdown(f"""
         background-color: transparent !important;
     }}
     
-    /* Style collapse/expand sidebar buttons beautifully (Hamburger-like) */
-    button[title="Collapse sidebar"], [data-testid="collapsedSidebarCollapse"] {{
-        background-color: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid {border_color} !important;
-        border-radius: 8px !important;
+    /* Sidebar customization for dual themes */
+    section[data-testid="stSidebar"], [data-testid="stSidebarContent"], div[data-testid="stSidebarUserContent"] {{
+        background-color: {sidebar_bg} !important;
+        border-right: 1px solid {border_color} !important;
         color: {text_color} !important;
-        transition: all 0.3s ease !important;
+        transition: all 0.4s ease-in-out !important;
+    }}
+    
+    /* Clean, minimal, circular action buttons for sidebar toggle */
+    button[title="Collapse sidebar"], [data-testid="collapsedSidebarCollapse"] {{
+        background-color: transparent !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 50% !important;
+        color: {text_color} !important;
+        width: 36px !important;
+        height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.25s ease !important;
+        margin: 0.5rem !important;
     }}
     
     button[title="Collapse sidebar"]:hover, [data-testid="collapsedSidebarCollapse"]:hover {{
         border-color: #FF4B4B !important;
         color: #FF4B4B !important;
         background-color: rgba(255, 75, 75, 0.05) !important;
+        transform: scale(1.05);
     }}
     
-    button[title="Expand sidebar"], [data-testid="stHeader"] button, button[aria-label="Expand sidebar"] {{
+    button[title="Expand sidebar"], button[aria-label="Expand sidebar"], [data-testid="stHeader"] button {{
         background-color: {card_bg} !important;
         border: 1px solid {border_color} !important;
-        border-radius: 8px !important;
+        border-radius: 50% !important;
         color: {text_color} !important;
-        top: 1rem !important;
-        left: 1rem !important;
+        width: 38px !important;
+        height: 38px !important;
+        top: 0.75rem !important;
+        left: 0.75rem !important;
         position: fixed !important;
         z-index: 999999 !important;
-        transition: all 0.3s ease !important;
-        box-shadow: {shadow} !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        transition: all 0.25s ease !important;
+        box-shadow: {shadow} !important;
     }}
     
-    button[title="Expand sidebar"]:hover, [data-testid="stHeader"] button:hover, button[aria-label="Expand sidebar"]:hover {{
+    button[title="Expand sidebar"]:hover, button[aria-label="Expand sidebar"]:hover, [data-testid="stHeader"] button:hover {{
         border-color: #FF4B4B !important;
         color: #FF4B4B !important;
         background-color: rgba(255, 75, 75, 0.05) !important;

@@ -493,7 +493,16 @@ if model is None or vectorizer is None:
         "এটি আপনার জন্য `models/emotion_model.joblib` এবং `models/tfidf_vectorizer.joblib` ফাইল দুটি তৈরি ও সংরক্ষণ করবে।"
     )
 else:
-    # Two-column layout
+    # Initialize variables for full-width XAI panel
+    prediction_triggered = False
+    cleaned_text = ""
+    predicted_emotion = ""
+    confidence = 0.0
+    probabilities = []
+    classes = []
+    meta = None
+    
+    # Two-column layout for input & main scores
     col1, col2 = st.columns([1, 1], gap="large")
     
     with col1:
@@ -520,11 +529,12 @@ else:
             else:
                 with st.spinner("টেক্সট প্রসেসিং ও বিশ্লেষণ করা হচ্ছে..."):
                     # Step 1: Clean text
-                    cleaned_text = preprocess_bangla_text(user_input)
+                    c_text = preprocess_bangla_text(user_input)
                     
-                    if not cleaned_text:
+                    if not c_text:
                         st.error("⚠️ প্রসেসিংয়ের পর কোনো অর্থপূর্ণ বাংলা শব্দ পাওয়া যায়নি। অনুগ্রহ করে সঠিক বাংলা বাক্য লিখুন।")
                     else:
+                        cleaned_text = c_text
                         # Step 2: Extract features & predict
                         text_tfidf = vectorizer.transform([cleaned_text])
                         probabilities = model.predict_proba(text_tfidf)[0]
@@ -535,6 +545,7 @@ else:
                         confidence = prob_dict[predicted_emotion]
                         
                         meta = EMOTION_META[predicted_emotion]
+                        prediction_triggered = True
                         
                         # A. Display Prediction Card with dynamic border color
                         st.markdown(f"""
@@ -583,55 +594,6 @@ else:
                         )
                         
                         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-                        
-                        # D. EXPLAINABLE AI (XAI) PANEL
-                        st.markdown("---")
-                        with st.expander("🔍 **Explainable AI: Why did the AI make this decision? (সহজ ভাষায় ব্যাখ্যা)**", expanded=True):
-                            st.write(
-                                "AI systems can sometimes seem like a black box. To keep things transparent, "
-                                "below is a list of the **most influential words** in your text that drove the AI to its prediction. "
-                                "The longer the bar, the more weight the AI placed on that word during its decision-making."
-                            )
-                            
-                            # Get word influences
-                            influences = explain_prediction(model, vectorizer, cleaned_text, predicted_emotion)
-                            
-                            if not influences:
-                                st.write("ℹ️ *No specific word scores could be extracted, but the model relied on overall context. Write sentences containing strong emotional words like 'খুশি' or 'হতাশ' to see influence scores.*")
-                            else:
-                                inf_df = pd.DataFrame(influences).head(6) # Show top 6 words
-                                
-                                # Generate horizontal influence bar chart
-                                xai_fig = go.Figure(go.Bar(
-                                    x=inf_df['influence'],
-                                    y=inf_df['word'],
-                                    orientation='h',
-                                    marker_color=meta['color'],
-                                    text=inf_df['influence'].apply(lambda x: f"+{x:.3f}"),
-                                    textposition='outside',
-                                    hoverinfo='none'
-                                ))
-                                
-                                xai_fig.update_layout(
-                                    xaxis=dict(title='শব্দের প্রভাব মাত্রা (Influence Weight)', gridcolor=border_color, tickfont=dict(color=text_font_color)),
-                                    yaxis=dict(title='শব্দ (Word)', automargin=True, tickfont=dict(color=text_font_color)),
-                                    margin=dict(l=10, r=10, t=10, b=10),
-                                    height=180 + (len(inf_df) * 15),
-                                    paper_bgcolor='rgba(0,0,0,0)',
-                                    plot_bgcolor='rgba(0,0,0,0)',
-                                    font=dict(family='Outfit, sans-serif', color=text_font_color)
-                                )
-                                
-                                st.plotly_chart(xai_fig, use_container_width=True, config={'displayModeBar': False})
-                                
-                                # Sleek, customized box for layman explanation
-                                st.markdown(f"""
-                                <div class='layman-explanation-card'>
-                                
-                                {generate_layman_explanation(influences, predicted_emotion)}
-                                
-                                </div>
-                                """, unsafe_allow_html=True)
         else:
             st.markdown(
                 f"<div style='border: 2px dashed {border_color}; border-radius: 16px; padding: 4.5rem; text-align: center; color: {sub_text};'>"
@@ -640,6 +602,59 @@ else:
                 "</div>",
                 unsafe_allow_html=True
             )
+
+    # Render XAI Panel in full width below the columns
+    if prediction_triggered:
+        # D. EXPLAINABLE AI (XAI) PANEL - FULL WIDTH
+        st.markdown("---")
+        with st.expander("🔍 **Explainable AI: Why did the AI make this decision? (সহজ ভাষায় ব্যাখ্যা)**", expanded=True):
+            st.write(
+                "AI systems can sometimes seem like a black box. To keep things transparent, "
+                "below is a list of the **most influential words** in your text that drove the AI to its prediction. "
+                "The longer the bar, the more weight the AI placed on that word during its decision-making."
+            )
+            
+            # Get word influences
+            influences = explain_prediction(model, vectorizer, cleaned_text, predicted_emotion)
+            
+            if len(influences) > 0:
+                col_left, col_right = st.columns([1.2, 1], gap="large")
+                
+                with col_left:
+                    st.markdown("##### 📊 **শব্দের প্রভাব মাত্রা (Word Influence Chart)**")
+                    inf_df = pd.DataFrame(influences).head(6) # Show top 6 words
+                    
+                    # Generate horizontal influence bar chart
+                    xai_fig = go.Figure(go.Bar(
+                        x=inf_df['influence'],
+                        y=inf_df['word'],
+                        orientation='h',
+                        marker_color=meta['color'],
+                        text=inf_df['influence'].apply(lambda x: f"+{x:.3f}"),
+                        textposition='outside',
+                        hoverinfo='none'
+                    ))
+                    
+                    text_font_color = "#FFFFFF" if theme_choice == "Sleek Dark (Default)" else "#2C3E50"
+                    xai_fig.update_layout(
+                        xaxis=dict(title='শব্দের প্রভাব মাত্রা (Influence Weight)', gridcolor=border_color, tickfont=dict(color=text_font_color)),
+                        yaxis=dict(title='শব্দ (Word)', automargin=True, tickfont=dict(color=text_font_color)),
+                        margin=dict(l=10, r=10, t=10, b=10),
+                        height=180 + (len(inf_df) * 15),
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        font=dict(family='Outfit, sans-serif', color=text_font_color)
+                    )
+                    
+                    st.plotly_chart(xai_fig, use_container_width=True, config={'displayModeBar': False})
+                    
+                with col_right:
+                    # Sleek, customized box for layman explanation using st.container(border=True)
+                    st.markdown("##### 💡 **সহজ ব্যাখ্যা (Layman Explanation)**")
+                    with st.container(border=True):
+                        st.markdown(generate_layman_explanation(influences, predicted_emotion))
+            else:
+                st.write("ℹ️ *No specific word scores could be extracted, but the model relied on overall context. Write sentences containing strong emotional words like 'খুশি' or 'হতাশ' to see influence scores.*")
 
     # ==========================================
     # INTERACTIVE AI SCORECARD & EDUCATION

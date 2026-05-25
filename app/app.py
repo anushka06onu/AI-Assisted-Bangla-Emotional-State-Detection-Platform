@@ -301,6 +301,52 @@ def explain_prediction(model, vectorizer, cleaned_text, predicted_emotion):
     word_influences = sorted(word_influences, key=lambda x: x['influence'], reverse=True)
     return word_influences
 
+
+def generate_layman_explanation(influences, predicted_emotion):
+    """
+    Translates mathematical word influences into a highly intuitive, 
+    warm, and easy-to-understand explanation for laymen.
+    """
+    emotion_translation = {
+        'happy': ('आनन्दিত (Happy)', '😊 happy'),
+        'sad': ('দুঃখিত (Sad)', '💙 sad'),
+        'angry': ('ক্ষুব্ধ (Angry)', '😡 angry'),
+        'fear': ('ভীত (Fear)', '😨 fear'),
+        'neutral': ('স্বাভাবিক (Neutral)', '😐 neutral')
+    }
+    
+    label_en, label_emoji = emotion_translation.get(predicted_emotion, (predicted_emotion, predicted_emotion))
+    
+    if not influences:
+        return (
+            "**English:** The AI analyzed the sentence as a whole. While no single word dominated, the overall context, sentence pattern, and word flow strongly pointed towards this emotion.\n\n"
+            "**বাংলা:** AI আপনার পুরো বাক্যটি একসাথে বিশ্লেষণ করেছে। যদিও কোনো একটি নির্দিষ্ট শব্দ আলাদাভাবে খুব বেশি প্রভাব ফেলেনি, তবে বাক্যের গঠন এবং সামগ্রিক সুর মিলিয়ে AI এই সিদ্ধান্তে পৌঁছেছে।"
+        )
+    
+    # Extract top words
+    top_words = [item['word'] for item in influences[:3]]
+    top_words_str_en = ", ".join([f"**'{w}'**" for w in top_words])
+    top_words_str_bn = " এবং ".join([f"**'{w}'**" for w in top_words]) if len(top_words) == 1 else ", ".join([f"**'{w}'**" for w in top_words[:-1]]) + f" এবং **'{top_words[-1]}'**"
+    
+    explanation_en = (
+        f"#### 💡 Plain-English AI Explanation\n"
+        f"Think of the AI as a smart scale balancing clues. When reading your text, it detected the words {top_words_str_en} "
+        f"which act like heavy weights pulling the scale towards **{label_emoji}**. "
+        f"In its memory (trained on thousands of examples), these specific words are very strongly associated with this emotional state. "
+        f"Because these clues are present, the AI is highly confident that your sentence represents this wellness state!"
+    )
+    
+    explanation_bn = (
+        f"#### 💡 সহজ বাংলায় AI-এর ব্যাখ্যা\n"
+        f"AI-কে একটি দাড়িপাল্লার মতো চিন্তা করুন যা বিভিন্ন সংকেত বা সূত্র মেপে দেখে। আপনার বাক্যটি পড়ার সময় এটি {top_words_str_bn} শব্দগুলোকে "
+        f"শনাক্ত করেছে, যা দাড়িপাল্লাটিকে **{label_emoji}** আবেগের দিকে ঝুঁকিয়ে দিয়েছে! "
+        f"হাজার হাজার বাস্তব উদাহরণের মাধ্যমে তৈরি AI-এর স্মৃতিতে এই শব্দগুলো এই মানসিক অবস্থার সাথে গভীরভাবে যুক্ত। "
+        f"এই সংকেতগুলোর উপস্থিতির কারণেই AI খুব আত্মবিশ্বাসের সাথে আপনার অনুভূতিটি বুঝতে পেরেছে!"
+    )
+    
+    return f"{explanation_en}\n\n---\n\n{explanation_bn}"
+
+
 # ==========================================
 # EMOTION METADATA
 # ==========================================
@@ -514,6 +560,15 @@ else:
                                 )
                                 
                                 st.plotly_chart(xai_fig, use_container_width=True, config={'displayModeBar': False})
+                                
+                                # Sleek, customized box for layman explanation
+                                box_bg = "rgba(255, 255, 255, 0.03)" if theme_choice == "Sleek Dark (Default)" else "rgba(0, 0, 0, 0.02)"
+                                box_border = "#444444" if theme_choice == "Sleek Dark (Default)" else "#BDC3C7"
+                                st.markdown(f"""
+                                <div style='margin-top: 1.5rem; padding: 1.25rem; border-radius: 12px; border: 1px solid {box_border}; background-color: {box_bg};'>
+                                """, unsafe_allow_html=True)
+                                st.markdown(generate_layman_explanation(influences, predicted_emotion))
+                                st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.markdown(
                 f"<div style='border: 2px dashed {border_color}; border-radius: 16px; padding: 4.5rem; text-align: center; color: {sub_text};'>"

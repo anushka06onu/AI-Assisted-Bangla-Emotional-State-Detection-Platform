@@ -93,10 +93,55 @@ st.markdown(f"""
         transition: all 0.4s ease-in-out;
     }}
     
-    /* Hide Default Streamlit Header, Hamburger Menu, and Footer Completely */
-    header, footer, .stDeployButton, #MainMenu, [data-testid="stHeader"] {{
+    /* Hide specific unwanted Streamlit elements while keeping the header area functional */
+    footer {{
         visibility: hidden !important;
         display: none !important;
+    }}
+    [data-testid="stMainMenu"], [data-testid="stAppDeployButton"], .stDeployButton, #MainMenu {{
+        visibility: hidden !important;
+        display: none !important;
+    }}
+    header {{
+        background-color: transparent !important;
+    }}
+    
+    /* Style collapse/expand sidebar buttons beautifully (Hamburger-like) */
+    button[title="Collapse sidebar"], [data-testid="collapsedSidebarCollapse"] {{
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 8px !important;
+        color: {text_color} !important;
+        transition: all 0.3s ease !important;
+    }}
+    
+    button[title="Collapse sidebar"]:hover, [data-testid="collapsedSidebarCollapse"]:hover {{
+        border-color: #FF4B4B !important;
+        color: #FF4B4B !important;
+        background-color: rgba(255, 75, 75, 0.05) !important;
+    }}
+    
+    button[title="Expand sidebar"], [data-testid="stHeader"] button, button[aria-label="Expand sidebar"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 8px !important;
+        color: {text_color} !important;
+        top: 1rem !important;
+        left: 1rem !important;
+        position: fixed !important;
+        z-index: 999999 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: {shadow} !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }}
+    
+    button[title="Expand sidebar"]:hover, [data-testid="stHeader"] button:hover, button[aria-label="Expand sidebar"]:hover {{
+        border-color: #FF4B4B !important;
+        color: #FF4B4B !important;
+        background-color: rgba(255, 75, 75, 0.05) !important;
+        transform: scale(1.05);
     }}
     
     /* Title Layout styling */

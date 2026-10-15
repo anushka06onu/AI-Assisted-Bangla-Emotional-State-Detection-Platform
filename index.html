@@ -202,7 +202,7 @@
         /* Features Section */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
             gap: 2rem;
             margin-bottom: 4rem;
         }
@@ -299,6 +299,8 @@
                 padding: 1.5rem 1rem;
             }
         }
+        html { overflow-x: clip; }
+        .hero-layout > *, .features-grid > * { min-width: 0; }
     </style>
 </head>
 <body>
@@ -314,8 +316,9 @@
 
         <section class="hero-layout">
             <div class="hero-content">
-                <span class="badge">Accuracy: 100.00%</span>
-                <h2>Understand your mental wellness with state-of-the-art precision.</h2>
+                <span class="badge">Synthetic-template holdout accuracy: 100.00%</span>
+                <p>Research demonstration only. Real independently written Bangla evaluation is pending; this is not a mental-health assessment.</p>
+                <h2>Explore Bangla emotion classification in an educational prototype.</h2>
                 <p class="hero-desc">
                     This end-to-end system—comprising custom Bangla NLP preprocessing utilities, templates-driven synthetic corpus compilers, retrained Linear SVM boundaries, and custom-animated interfaces—was designed and developed to provide deep, self-aware insight into Bangla statements.
                 </p>
@@ -347,7 +350,7 @@
             </div>
             <div class="feature-card glass-card">
                 <h3>🧹 Bangla NLP Pipeline</h3>
-                <p>Removes pictorial emojis, strips English/Bangla punctuations (e.g. Dari <code>।</code>), normalizes whitespace, and normalizes feature dimensions for 100.00% perfect diagonal evaluation matrix scores.</p>
+                <p>Removes pictorial emojis, strips English/Bangla punctuations (e.g. Dari <code>।</code>), normalizes whitespace, and prepares text for TF-IDF classification. The reported score is from a synthetic template-generated holdout and does not establish real-world accuracy.</p>
             </div>
         </section>
     </div>
@@ -357,3 +360,4 @@
     </footer>
 </body>
 </html>
+
